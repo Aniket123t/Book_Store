@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Authentication_Authorization_V8.Models.Cart>
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<h3>My Cart</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Book</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Book?.Title</td>
+                <td>@item.Book?.Price</td>
+                <td>@(item.Quantity * (item.Book?.Price ?? 0))</td>
+                <td>@(item.Quantity* item.Book.Price)</td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.CartId" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form asp-controller="Order" asp-action="Create" method="post">
+    <button type="submit" class="btn btn-success">Place Order</button>
+</form>

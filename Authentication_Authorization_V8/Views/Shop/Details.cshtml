@@ -1,0 +1,25 @@
+﻿@model Authentication_Authorization_V8.Models.Book
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h3>Book Details</h3>
+
+<div>
+    <img src="@Url.Content(Model.ImageUrl)" height="250" width="350" />
+    <h4>@Model.Title</h4>
+    <p>@Model.Author</p>
+    <p>@Model.Description</p>
+    <p>₹ @Model.Price</p>
+
+    <a asp-controller="Cart" asp-action="Create" asp-route-id="@Model.BookId" class="btn btn-primary">
+        Add to Cart
+    </a>
+    <a asp-controller="Order" asp-action="Create" asp-route-id="@Model.BookId" class="btn btn-success">
+        Place Order
+    </a>
+</div>
+
+<br />
+<a asp-action="Index">Back</a>

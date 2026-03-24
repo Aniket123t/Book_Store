@@ -1,0 +1,115 @@
+﻿@model IEnumerable<Authentication_Authorization_V8.Models.Book>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h3>Book Store</h3>
+
+<!-- 🔍 SEARCH BAR -->
+<div class="mb-3">
+    <div class="input-group">
+
+        <span class="input-group-text">
+            <i class="bi bi-search"></i>
+        </span>
+
+        <input type="text" id="searchBox" class="form-control" placeholder="Search books..." />
+
+        <button type="button" id="clearBtn" class="btn btn-outline-secondary">❌</button>
+
+    </div>
+</div>
+
+<!-- 📚 BOOK LIST -->
+<div class="row" id="bookList">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-3 book-item"
+             data-title="@item.Title.ToLower()"
+             style="border:1px solid black; margin:10px; padding:10px;">
+
+            <img src="@Url.Content(item.ImageUrl)" height="150" width="200" />
+            <h5>@item.Title</h5>
+            <p>@item.Author</p>
+            <p>₹ @item.Price</p>
+
+            <!-- 🛒 ADD TO CART -->
+            <form asp-controller="Cart" asp-action="Create" method="post">
+                <input type="hidden" name="BookId" value="@item.BookId" />
+
+                <div>
+                    <button type="button" onclick="decreaseQty(@item.BookId)">-</button>
+
+                    <input type="text" id="qty_@item.BookId" name="Quantity" value="1"
+                           style="width:40px; text-align:center;" />
+
+                    <button type="button" onclick="increaseQty(@item.BookId)">+</button>
+                </div>
+
+                <br />
+
+                <button type="submit" class="btn btn-success">Add to Cart</button>
+            </form>
+
+            <!-- ⚡ BUY NOW -->
+            <form asp-controller="Order" asp-action="DirectOrder" method="post">
+                <input type="hidden" name="BookId" value="@item.BookId" />
+                <input type="hidden" id="buy_qty_@item.BookId" name="Quantity" value="1" />
+                <button type="submit" class="btn btn-warning mt-2">Buy Now</button>
+            </form>
+
+        </div>
+    }
+</div>
+
+<!-- 🔢 QUANTITY SCRIPT -->
+<script>
+    function increaseQty(id) {
+        var qty = document.getElementById("qty_" + id);
+        qty.value = parseInt(qty.value) + 1;
+
+        document.getElementById("buy_qty_" + id).value = qty.value;
+    }
+
+    function decreaseQty(id) {
+        var qty = document.getElementById("qty_" + id);
+
+        if (parseInt(qty.value) > 1) {
+            qty.value = parseInt(qty.value) - 1;
+        }
+
+        document.getElementById("buy_qty_" + id).value = qty.value;
+    }
+</script>
+
+<!-- 🔍 LIVE SEARCH SCRIPT -->
+<script>
+    const searchBox = document.getElementById("searchBox");
+    const clearBtn = document.getElementById("clearBtn");
+    const books = document.querySelectorAll(".book-item");
+
+    // 🔍 Live search
+    searchBox.addEventListener("keyup", function () {
+        let value = this.value.toLowerCase();
+
+        books.forEach(function (book) {
+            let title = book.getAttribute("data-title");
+
+            if (title.includes(value)) {
+                book.style.display = "block";
+            } else {
+                book.style.display = "none";
+            }
+        });
+    });
+
+    // ❌ Clear button
+    clearBtn.addEventListener("click", function () {
+        searchBox.value = "";
+
+        books.forEach(function (book) {
+            book.style.display = "block";
+        });
+    });
+</script>

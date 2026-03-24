@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@{
+    ViewData["Title"] = "GetCustomers";
+}
+
+@model List<IdentityUser>
+
+<form method="post" asp-action="PromoteToAdmin">
+    <select name="userId" class="form-control" style="width:350px;">
+        @foreach (var user in Model)
+        {
+            <option value="@user.Id">@user.Email</option>
+        }
+    </select>
+    <br />
+    <button type="submit" class="btn btn-primary">Make Admin</button>
+</form>
+<p style="color:green;">
+    @ViewBag.Message
+</p>
